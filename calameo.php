@@ -52,21 +52,21 @@ class plgContentCalameo extends JPlugin
 			$row->text = str_replace($matches[0][$x], $replace, $row->text);
 		}
 	}
-	
+
 	function calameo_render( $tags )
 	{
 		// Parsing attributes
-		if ( !preg_match_all('/([^= ]+)=([\S]*)/i', $tags, $matches) ) return '';	
-	
+		if ( !preg_match_all('/([^= ]+)=([\S]*)/i', $tags, $matches) ) return '';
+
 		$attributes = array();
-	
+
 		$count = count($matches[1]);
-	
+
 		for ( $i = 0 ; $i < $count ; $i++ )
 		{
 			$attributes[$matches[1][$i]] = $matches[2][$i];
 		}
-	
+
 		// Get code from URL
 		if ( !empty($attributes['url']) )
 		{
@@ -75,7 +75,7 @@ class plgContentCalameo extends JPlugin
 				$attributes['code'] = $regs[2];
 			}
 		}
-			
+
 		// Checking attributes
 		if ( empty($attributes['code']) ) return '';
 		if ( empty($attributes['mode']) ) $attributes['mode'] = '';
@@ -83,12 +83,12 @@ class plgContentCalameo extends JPlugin
 		if ( empty($attributes['wmode']) ) $attributes['wmode'] = '';
 		if ( empty($attributes['title']) ) $attributes['title'] = 'View this publication on Calam&eacute;o';
 		if ( !isset($attributes['showsharemenu']) ) $attributes['showsharemenu'] = 1;
-		
+
 		$attributes['showsharemenu'] = ( $attributes['showsharemenu'] == '1' || $attributes['showsharemenu'] == 'true' ) ? 'true' : 'false';
-	
+
 		// Language
 		$language = preg_match('/$([a-z]+)/i', 'en');
-	
+
 		$languages = array(
 						   'en'=>'en',
 						   'fr'=>'fr',
@@ -101,59 +101,59 @@ class plgContentCalameo extends JPlugin
 						   'zh'=>'cn',
 						   'kr'=>'kr'
 						  );
-	
+
 		if ( empty($attributes['lang']) )
 		{
 			$attributes['lang'] = ( !empty($language) && !empty($languages[$language]) ) ? $languages[$language] : 'en';
 		}
-	
+
 		// Prepare viewer and link URLs
 		$book_url = 'http://calameo.com/books/' . $attributes['code'] . ( !empty($attributes['authid']) ? '?authid=' . $attributes['authid'] : '' );
 		$home_url = 'http://calameo.com';
 		$publish_url = 'http://calameo.com/upload';
 		$browse_url = 'http://calameo.com/browse/weekly/?o=7&w=DESC';
-		$viewer_url = 'http://v.calameo.com/';
-	
+		$viewer_url = '//v.calameo.com/';
+
 		// Preparing Flashvars
 		$flashvars  = 'bkcode=' . $attributes['code'];
 		$flashvars .= '&amp;language=' . $attributes['lang'];
 		$flashvars .= '&amp;page=' . $attributes['page'];
 		$flashvars .= '&amp;showsharemenu=' . $attributes['showsharemenu'];
-		
+
 
 		switch ( $attributes['mode'] )
 		{
 			case 'mini':
 				if ( empty($attributes['width']) )			$attributes['width'] = '240';
 				if ( empty($attributes['height']) )			$attributes['height'] = '150';
-	
+
 				if ( empty($attributes['clickto']) )		$attributes['clickto'] = 'public';
 				if ( empty($attributes['clicktarget']) )	$attributes['clicktarget'] = '_self';
 				if ( empty($attributes['clicktourl']) )		$attributes['clicktourl'] = '';
 				if ( empty($attributes['autoflip']) )		$attributes['autoflip'] = '0';
-	
+
 				if ( empty($attributes['wmode']) )			$attributes['wmode'] = 'transparent';
-	
+
 				$flashvars .= '&amp;clickTo=' . urlencode($attributes['clickto']);
 				$flashvars .= '&amp;clickTarget=' . urlencode($attributes['clicktarget']);
 				$flashvars .= '&amp;clickToUrl=' . urlencode($attributes['clicktourl']);
 				$flashvars .= '&amp;autoFlip=' . max(0, intval($attributes['autoflip']));
 				$flashvars .= '&amp;mode=mini';
-	
+
 				break;
-	
+
 			case 'book':
 			case 'viewer':
-			
+
 				$flashvars .= '&amp;mode=viewer';
-	
+
 			default:
 				if ( empty($attributes['width']) )$attributes['width'] = '100%';
 				if ( empty($attributes['height']) ) $attributes['height'] = '400';
-	
+
 				break;
 		}
-	
+
 
 		if ( !empty($attributes['authid']) )				$flashvars .= '&amp;authid=' . $attributes['authid'];
 		if ( !empty($attributes['view']) )					$flashvars .= '&amp;view=' . $attributes['view'];
@@ -169,24 +169,24 @@ class plgContentCalameo extends JPlugin
 		if ( !empty($attributes['apikey']) )				$flashvars .= '&amp;apikey=' . $attributes['apikey'];
 		if ( !empty($attributes['expires']) )				$flashvars .= '&amp;expires=' . $attributes['expires'];
 		if ( !empty($attributes['signature']) )				$flashvars .= '&amp;signature=' . $attributes['signature'];
-	
+
 		// Sizes and units
 		$attributes['widthUnit'] = ( strpos($attributes['width'], '%') ) ? '' : 'px';
 		$attributes['heightUnit'] = ( strpos($attributes['height'], '%') ) ? '' : 'px';
-	
+
 		// Generate HTML embed code
 		$html = '<div style="' . ( empty($attributes['styles']) ? 'text-align: center; width:' . $attributes['width'] . $attributes['widthUnit'] . '; margin: 12px auto;' : $attributes['styles'] ) . '">';
-	
+
 		if ( empty($attributes['hidelinks']) ) $html .= '<div style="margin: 4px 0px;"><a href="' . $book_url . '">' . $attributes['title'] . '</a></div>';
-	
+
 		$id = 'calameo-viewer-' . $attributes['code'] . '-' . mktime() . '-' . rand(1000,9999);
-	
+
 		$html .= '<iframe src="' . $viewer_url . '?' . $flashvars . '" width="' . $attributes['width'] . '" height="' . $attributes['height'] . '" style="width:' . $attributes['width'] . $attributes['widthUnit'] . ';height:' . $attributes['height'] . $attributes['heightUnit'] . '" seamless="seamless" frameborder="0" allowtransparency="true"></iframe>';
-	
+
 		if ( empty($attributes['hidelinks']) ) $html .= '<div style="margin: 4px 0px; font-size: 90%;"><a rel="nofollow" href="' . $publish_url . '">Publish</a> at <a href="' . $home_url . '">Calam&eacute;o</a> or <a href="' . $browse_url . '">browse</a> the library.</div>';
-	
+
 		$html .= '</div>';
-	
+
 		//
 
 		return $html;
