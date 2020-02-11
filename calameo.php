@@ -179,7 +179,7 @@ class plgContentCalameo extends JPlugin
 
 		if ( empty($attributes['hidelinks']) ) $html .= '<div style="margin: 4px 0px;"><a href="' . $book_url . '">' . $attributes['title'] . '</a></div>';
 
-		$id = 'calameo-viewer-' . $attributes['code'] . '-' . mktime() . '-' . rand(1000,9999);
+		$id = 'calameo-viewer-' . $attributes['code'] . '-' . time() . '-' . rand(1000,9999);
 
 		$html .= '<iframe src="' . $viewer_url . '?' . $flashvars . '" width="' . $attributes['width'] . '" height="' . $attributes['height'] . '" style="width:' . $attributes['width'] . $attributes['widthUnit'] . ';height:' . $attributes['height'] . $attributes['heightUnit'] . '" seamless="seamless" frameborder="0" allowtransparency="true"></iframe>';
 
