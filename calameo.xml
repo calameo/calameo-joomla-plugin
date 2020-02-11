@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<extension type="plugin" version="3.1" method="upgrade" group="content">
+<extension type="plugin" version="3.2" method="upgrade" group="content">
 	<name>Content - Calameo</name>
 	<author>Calameo</author>
 	<creationDate>February 2013</creationDate>
 	<license>http://www.gnu.org/copyleft/gpl.html GNU/GPL</license>
 	<authorEmail>contact@calameo.com</authorEmail>
-	<version>3.1.0</version>
+	<version>3.2.0</version>
 	<description>Embed Calameo publications inside a post</description>
 	<files>
 		<filename plugin="calameo">calameo.php</filename>
