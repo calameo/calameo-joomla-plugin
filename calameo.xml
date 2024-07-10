@@ -5,7 +5,7 @@
 	<creationDate>February 2013</creationDate>
 	<license>http://www.gnu.org/copyleft/gpl.html GNU/GPL</license>
 	<authorEmail>contact@calameo.com</authorEmail>
-	<version>3.2.0</version>
+	<version>3.2.1</version>
 	<description>Embed Calameo publications inside a post</description>
 	<files>
 		<filename plugin="calameo">calameo.php</filename>
